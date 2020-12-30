@@ -5,6 +5,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProfileService } from './profile.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,7 @@ export class AuthService {
   private readonly REFRESH_TOKEN = 'REFRESH_TOKEN';
 
   constructor(
+    private router: Router,
     private http: HttpClient,
     private snackBar: MatSnackBar,
     private profileService: ProfileService
@@ -31,20 +33,9 @@ export class AuthService {
     );
   }
 
-  logout() {
-    return this.http
-      .post<any>(`${environment.BASE_URL}/auth/logout`, {
-        refreshToken: this.getRefreshToken(),
-      })
-      .pipe(
-        tap(() => this.doLogoutUser()),
-        catchError((error) => {
-          this.snackBar.open(error.error.message, 'Aceptar', {
-            duration: 2000,
-          });
-          throw error;
-        })
-      );
+  logout(): void {
+    this.doLogoutUser();
+    this.router.navigate(['/authentication'])
   }
 
   register(user: { username: string; password: string }): Observable<boolean> {
@@ -105,6 +96,6 @@ export class AuthService {
 
   private removeTokens() {
     localStorage.removeItem(this.JWT_TOKEN);
-    localStorage.removeItem(this.REFRESH_TOKEN);
+    // localStorage.removeItem(this.REFRESH_TOKEN);
   }
 }
