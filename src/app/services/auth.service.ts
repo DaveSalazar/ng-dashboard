@@ -1,41 +1,64 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { catchError, mapTo, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ProfileService } from './profile.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  
   private readonly JWT_TOKEN = 'JWT_TOKEN';
   private readonly REFRESH_TOKEN = 'REFRESH_TOKEN';
-  private loggedUser: string;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private snackBar: MatSnackBar,
+    private profileService: ProfileService
+  ) {}
 
-  login(user: { username: string, password: string }): Observable<boolean> {
-    return this.http.post<any>(`${environment.BASE_URL}/login`, user)
-      .pipe(
-        tap(tokens => this.doLoginUser(user.username, tokens)),
-        mapTo(true),
-        catchError(error => {
-          alert(error.error);
-          return of(false);
-        }));
+  login(user: { email: string; password: string }): Observable<void> {
+    return this.http.post<any>(`${environment.BASE_URL}/auth/login`, user).pipe(
+      tap((response) => this.doLoginUser(response)),
+      catchError((error) => {
+        this.snackBar.open(error.error.message, 'Aceptar', {
+          duration: 2000,
+        });
+        return null;
+      })
+    );
   }
 
   logout() {
-    return this.http.post<any>(`${environment.BASE_URL}/logout`, {
-      'refreshToken': this.getRefreshToken()
-    }).pipe(
-      tap(() => this.doLogoutUser()),
-      mapTo(true),
-      catchError(error => {
-        alert(error.error);
-        return of(false);
-      }));
+    return this.http
+      .post<any>(`${environment.BASE_URL}/auth/logout`, {
+        refreshToken: this.getRefreshToken(),
+      })
+      .pipe(
+        tap(() => this.doLogoutUser()),
+        catchError((error) => {
+          this.snackBar.open(error.error.message, 'Aceptar', {
+            duration: 2000,
+          });
+          throw error;
+        })
+      );
+  }
+
+  register(user: { username: string; password: string }): Observable<boolean> {
+    return this.http
+      .post<any>(`${environment.BASE_URL}/auth/register`, user)
+      .pipe(
+        tap((response) => this.doLoginUser(response.token)),
+        catchError((error) => {
+          this.snackBar.open(error.error.message, 'Aceptar', {
+            duration: 2000,
+          });
+          throw error;
+        })
+      );
   }
 
   isLoggedIn() {
@@ -43,24 +66,27 @@ export class AuthService {
   }
 
   refreshToken() {
-    return this.http.post<any>(`${environment.BASE_URL}/refresh`, {
-      'refreshToken': this.getRefreshToken()
-    }).pipe(tap((tokens: any) => {
-      this.storeJwtToken(tokens.jwt);
-    }));
+    return this.http
+      .post<any>(`${environment.BASE_URL}/auth/refresh`, {
+        refreshToken: this.getRefreshToken(),
+      })
+      .pipe(
+        tap((tokens: any) => {
+          this.storeJwtToken(tokens.jwt);
+        })
+      );
   }
 
   getJwtToken() {
     return localStorage.getItem(this.JWT_TOKEN);
   }
 
-  private doLoginUser(username: string, tokens: any) {
-    this.loggedUser = username;
-    this.storeTokens(tokens);
+  private doLoginUser(response: any) {
+    this.storeToken(response.token);
+    this.profileService.saveProfile(response.profile);
   }
 
   private doLogoutUser() {
-    this.loggedUser = null;
     this.removeTokens();
   }
 
@@ -72,9 +98,9 @@ export class AuthService {
     localStorage.setItem(this.JWT_TOKEN, jwt);
   }
 
-  private storeTokens(tokens: any) {
-    localStorage.setItem(this.JWT_TOKEN, tokens.jwt);
-    localStorage.setItem(this.REFRESH_TOKEN, tokens.refreshToken);
+  private storeToken(token: any) {
+    localStorage.setItem(this.JWT_TOKEN, token);
+    // localStorage.setItem(this.REFRESH_TOKEN, tokens.refreshToken);
   }
 
   private removeTokens() {
