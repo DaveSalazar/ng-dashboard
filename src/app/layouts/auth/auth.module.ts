@@ -11,8 +11,8 @@ import { MatDividerModule } from '@angular/material/divider'
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatIconModule} from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { TokenInterceptor } from 'src/app/interceptors/token.interceptor';
+import { HttpClientModule } from '@angular/common/http';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @NgModule({
   declarations: [
@@ -34,11 +34,7 @@ import { TokenInterceptor } from 'src/app/interceptors/token.interceptor';
     MatFormFieldModule
   ],
   providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor,
-      multi: true
-    }
+   AuthService
   ]
 })
 export class AuthModule { }

@@ -1,15 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable  } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { Profile } from '../models/Profile';
+import { Profile } from '../../models/Profile';
+import { IProfileService } from './IProfileService';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProfileService {
+export class ProfileService implements IProfileService{
 
   private _profile: BehaviorSubject<Profile> = new BehaviorSubject(null);
   readonly profile = this._profile.asObservable();
@@ -26,7 +27,7 @@ export class ProfileService {
     return this.http.put<void>(`${environment.BASE_URL}/auth/login`, profile)
     .pipe(
       tap(() => {
-        localStorage.setItem('profile', profile.encode())
+        localStorage.setItem('profile', JSON.stringify(profile))
         this._profile.next(profile);
       }),
       catchError((error) => {
@@ -38,8 +39,17 @@ export class ProfileService {
 
   getProfile(): Profile {
     if(localStorage.getItem('profile')) {
-      return Profile.decode(localStorage.getItem('profile'));
+      return JSON.parse(localStorage.getItem('profile'));
     }
     return null;
+  }
+
+  setSessionProfile(profile): void {
+    localStorage.setItem('profile', JSON.stringify(profile));
+  }
+
+  deleteSessionProfile(): void {
+    localStorage.removeItem('user');
+    localStorage.removeItem('profile');
   }
 }

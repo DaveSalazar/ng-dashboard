@@ -4,26 +4,26 @@ import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ProfileService } from './profile.service';
 import { Router } from '@angular/router';
+import { IAuthService } from './IAuthService';
+import { TokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
-  private readonly JWT_TOKEN = 'JWT_TOKEN';
-  private readonly REFRESH_TOKEN = 'REFRESH_TOKEN';
-
+export class AuthService implements IAuthService {
+  private readonly JWT_TOKEN = 'token';
+  private readonly REFRESH_TOKEN = 'refreshToken';
+  private URL = environment.BASE_URL + '/api/v1'
   constructor(
     private router: Router,
     private http: HttpClient,
+    private token: TokenService,
     private snackBar: MatSnackBar,
-    private profileService: ProfileService
   ) {}
 
-  login(user: { email: string; password: string }): Observable<void> {
-    return this.http.post<any>(`${environment.BASE_URL}/auth/login`, user).pipe(
-      tap((response) => this.doLoginUser(response)),
+  login(user: { email: string; password: string }): Observable<any> {
+    return this.http.post<any>(`${this.URL}/auth/login`, user).pipe(     
       catchError((error) => {
         this.snackBar.open(error.error.message, 'Aceptar', {
           duration: 2000,
@@ -40,7 +40,7 @@ export class AuthService {
 
   register(user: { username: string; password: string }): Observable<boolean> {
     return this.http
-      .post<any>(`${environment.BASE_URL}/auth/register`, user)
+      .post<any>(`${this.URL}/auth/register`, user)
       .pipe(
         tap((response) => this.doLoginUser(response.token)),
         catchError((error) => {
@@ -58,7 +58,7 @@ export class AuthService {
 
   refreshToken() {
     return this.http
-      .post<any>(`${environment.BASE_URL}/auth/refresh`, {
+      .post<any>(`${this.URL}/auth/refresh`, {
         refreshToken: this.getRefreshToken(),
       })
       .pipe(
@@ -74,7 +74,6 @@ export class AuthService {
 
   private doLoginUser(response: any) {
     this.storeToken(response.token);
-    this.profileService.saveProfile(response.profile);
   }
 
   private doLogoutUser() {
@@ -85,6 +84,17 @@ export class AuthService {
     return localStorage.getItem(this.REFRESH_TOKEN);
   }
 
+  handleTokens(data) {
+    const {token, refreshToken} = data
+    if (!token || !refreshToken){
+      localStorage.clear()
+      window.location.reload()
+      throw "No token"
+    }
+    if (token) this.token.set(token);
+    if (refreshToken) this.token.setRefreshToken(refreshToken)
+  }
+  
   private storeJwtToken(jwt: string) {
     localStorage.setItem(this.JWT_TOKEN, jwt);
   }
@@ -96,6 +106,17 @@ export class AuthService {
 
   private removeTokens() {
     localStorage.removeItem(this.JWT_TOKEN);
-    // localStorage.removeItem(this.REFRESH_TOKEN);
+    localStorage.removeItem(this.REFRESH_TOKEN);
+  }
+
+  setUser(data): void {
+    localStorage.setItem('user', JSON.stringify(data));
+  }
+
+  handleUser(data):void {
+    this.setUser(data);
+    const {token, refreshToken} = data
+    if (token) this.token.set(token);
+    if (refreshToken) this.token.setRefreshToken(refreshToken)
   }
 }

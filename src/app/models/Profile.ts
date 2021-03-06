@@ -1,5 +1,3 @@
-import { ISerializer } from './Serializer';
-
 export interface IProfile {
   profileId: string;
   userId: string;
@@ -8,7 +6,7 @@ export interface IProfile {
   lastName: string;
 }
 
-export class Profile implements IProfile, ISerializer<Profile> {
+export class Profile implements IProfile {
   readonly profileId: string;
   readonly userId: string;
   readonly firstName: string;
@@ -29,24 +27,4 @@ export class Profile implements IProfile, ISerializer<Profile> {
     this.lastName = lastName;
   }
 
-  encode(): string {
-    return JSON.stringify({
-      profileId: this.profileId,
-      userId: this.userId,
-      email: this.email,
-      firstName: this.firstName,
-      lastName: this.lastName,
-    });
-  }
-
-  static decode(obj: string): Profile {
-    const data = JSON.parse(obj) as IProfile;
-    return new Profile(
-      data.profileId,
-      data.userId,
-      data.email,
-      data.firstName,
-      data.lastName
-    );
-  }
 }
