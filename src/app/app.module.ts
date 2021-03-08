@@ -7,12 +7,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DefaultModule } from './layouts/default/default.module';
 import { AuthModule } from './layouts/auth/auth.module';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import { ProfileService } from './services/profile.service';
-import { LoginComponent } from './pages/login/login.component';
+
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -23,7 +21,6 @@ import { LoginComponent } from './pages/login/login.component';
   ],
   providers: [
     MatSnackBar,
-    ProfileService
   ],
   bootstrap: [AppComponent]
 })

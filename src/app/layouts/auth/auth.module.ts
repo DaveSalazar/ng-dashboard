@@ -13,10 +13,14 @@ import {MatIconModule} from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoginComponent } from 'src/app/modules/auth/login/login.component';
+import { RegisterComponent } from 'src/app/modules/auth/register/register.component';
 
 @NgModule({
   declarations: [
     AuthComponent,
+    LoginComponent,
+    RegisterComponent
   ],
   imports: [
     CommonModule,
