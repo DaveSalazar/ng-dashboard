@@ -1,18 +1,12 @@
-import { HttpClient, HttpHandler } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TokenService {
 
-  private BASE_URL = environment.BASE_URL + '/api/v1';
 
-  constructor(
-    private http: HttpClient
-  ) { }
+  constructor() { }
 
   set(token):void {
     localStorage.setItem('token', token);
@@ -32,14 +26,6 @@ export class TokenService {
 
   removeRefreshToken(): void {
     localStorage.removeItem('refreshToken')
-  }
-
-  refreshAccessToken(handler: HttpHandler): Observable <any> {
-    const authData = {
-      refreshToken: this.getRefreshToken(), 
-      token: this.get()
-    }
-    return new HttpClient(handler).post<any>(`${this.BASE_URL}/auth/refresh`, authData)
   }
 
   remove():void {

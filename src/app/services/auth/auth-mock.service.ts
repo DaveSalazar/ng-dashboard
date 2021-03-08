@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { IAuthService } from './IAuthService';
 
 @Injectable({
@@ -7,21 +7,28 @@ import { IAuthService } from './IAuthService';
 })
 export class AuthMockService implements IAuthService {
 
+  private _isLoggedIn: boolean = false; 
 
   constructor() { }
 
   login(user: { email: string; password: string; }): Observable<void> {
-    throw new Error('Method not implemented.');
+    this._isLoggedIn = true;
+    return new Observable(subscriber => {
+      subscriber.next();
+    });
   }
   logout(): void {
-    throw new Error('Method not implemented.');
+    this._isLoggedIn = false;
+    return;
   }
   register(user: { username: string; password: string; }): Observable<boolean> {
-    throw new Error('Method not implemented.');
+    return new Observable(subscriber => {
+      subscriber.next(true);
+    });
   }
 
-  isLoggedIn() {
-    throw new Error('Method not implemented.');
+  isLoggedIn(): boolean {
+    return this._isLoggedIn
   }
 
   refreshToken() {

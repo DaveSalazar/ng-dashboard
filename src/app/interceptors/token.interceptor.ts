@@ -48,7 +48,7 @@ export class TokenInterceptor {
   }
 
   private handle400Error(request: HttpRequest<any>, next: HttpHandler) {
-      return this.tokenService.refreshAccessToken(next).pipe(
+      return this.authService.refreshAccessToken(next).pipe(
         switchMap((tokens: any) => {
           this.authService.handleTokens(tokens)
           return next.handle(this.addToken(request));

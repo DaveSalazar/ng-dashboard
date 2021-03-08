@@ -8,13 +8,14 @@ import { AuthComponent } from './auth.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatDividerModule } from '@angular/material/divider'
-import {MatTabsModule} from '@angular/material/tabs';
-import {MatIconModule} from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoginComponent } from 'src/app/modules/auth/login/login.component';
 import { RegisterComponent } from 'src/app/modules/auth/register/register.component';
+import { AuthMockService } from 'src/app/services/auth/auth-mock.service';
+import { IAuthService } from 'src/app/services/auth/IAuthService';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,10 @@ import { RegisterComponent } from 'src/app/modules/auth/register/register.compon
     MatFormFieldModule
   ],
   providers: [
-   AuthService
+    {
+      provide: IAuthService,
+      useClass: AuthMockService
+    }
   ]
 })
 export class AuthModule { }

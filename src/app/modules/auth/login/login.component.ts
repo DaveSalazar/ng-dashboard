@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { IAuthService } from 'src/app/services/auth/IAuthService';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +15,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: IAuthService
   ) {
     this.loginFormGroup = new FormGroup({
       email: new FormControl("", [Validators.required]),
@@ -29,7 +29,10 @@ export class LoginComponent implements OnInit {
   loginSubmit() {
     this.authService.login(this.loginFormGroup.value)
     .subscribe(res => {
+      console.log('submit')
       this.router.navigate(['/dashboard'])
     })
   }
+
+  
 }

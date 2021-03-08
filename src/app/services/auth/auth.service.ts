@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
@@ -118,5 +118,13 @@ export class AuthService implements IAuthService {
     const {token, refreshToken} = data
     if (token) this.token.set(token);
     if (refreshToken) this.token.setRefreshToken(refreshToken)
+  }
+
+  refreshAccessToken(handler: HttpHandler): Observable <any> {
+    const authData = {
+      refreshToken: this.getRefreshToken(), 
+      token: this.getJwtToken()
+    }
+    return new HttpClient(handler).post<any>(`${this.URL}/auth/refresh`, authData)
   }
 }

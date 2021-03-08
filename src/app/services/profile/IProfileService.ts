@@ -1,9 +1,9 @@
 import { Observable } from 'rxjs';
 import { Profile } from 'src/app/models/Profile';
 
-export interface IProfileService {
+export abstract class IProfileService {
   
-  saveProfile(profile: Profile): Observable<void>;
+  abstract saveProfile(profile: Profile): Observable<void>;
 
-  getProfile(): Profile;
+  abstract getProfile(): Profile;
 }
