@@ -91,7 +91,7 @@ export class AuthService implements IAuthService {
       window.location.reload()
       throw "No token"
     }
-    if (token) this.token.set(token);
+    if (token) this.token.setToken(token);
     if (refreshToken) this.token.setRefreshToken(refreshToken)
   }
   
@@ -116,7 +116,7 @@ export class AuthService implements IAuthService {
   handleUser(data):void {
     this.setUser(data);
     const {token, refreshToken} = data
-    if (token) this.token.set(token);
+    if (token) this.token.setToken(token);
     if (refreshToken) this.token.setRefreshToken(refreshToken)
   }
 

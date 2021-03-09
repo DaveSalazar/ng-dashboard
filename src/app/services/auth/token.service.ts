@@ -8,11 +8,11 @@ export class TokenService {
 
   constructor() { }
 
-  set(token):void {
+  setToken(token): void {
     localStorage.setItem('token', token);
   }
 
-  get() {
+  getToken(): string {
     return localStorage.getItem('token');
   }
 
@@ -28,25 +28,13 @@ export class TokenService {
     localStorage.removeItem('refreshToken')
   }
 
-  remove():void {
+  removeToken(): void {
     localStorage.removeItem('token');
   }
 
-  isValid() {
-    const token = this.get();
-    return (token && token !== 'undefined') ? true: false;
+  removeTokens(): void {
+    this.removeToken();
+    this.removeRefreshToken();
   }
 
-  payload(token) {
-    const payload = token.split('.')[1];
-    return this.decode(payload);
-  }
-
-  decode(payload) {
-    return JSON.parse(atob(payload));
-  }
-
-  loggedIn() {
-    return this.isValid();
-  }
 }

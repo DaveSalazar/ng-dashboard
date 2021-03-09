@@ -20,7 +20,7 @@ export class TokenInterceptor {
     private router: Router
   ) { }
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token: string = this.tokenService.get();    
+    const token: string = this.tokenService.getToken();    
     if (token) {
       request = this.addToken(request);
     }
@@ -42,7 +42,7 @@ export class TokenInterceptor {
   private addToken(request: HttpRequest<any>) {
     return request.clone({
       setHeaders: {
-        'Authorization': `Bearer ${this.tokenService.get()}`
+        'Authorization': `Bearer ${this.tokenService.getToken()}`
       }
     });
   }
