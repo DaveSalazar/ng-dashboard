@@ -19,6 +19,7 @@ export class TokenInterceptor {
     private tokenService: TokenService,
     private router: Router
   ) { }
+
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token: string = this.tokenService.getToken();    
     if (token) {
@@ -31,7 +32,6 @@ export class TokenInterceptor {
           localStorage.clear()
           window.location.reload()
         }else if (err.status === 400) {
-          console.log("buscando refrescar")
           return this.handle400Error(request, next);
         }
         return throwError( err );

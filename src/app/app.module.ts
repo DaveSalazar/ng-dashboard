@@ -4,9 +4,9 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DefaultModule } from './layouts/default/default.module';
 import { AuthModule } from './layouts/auth/auth.module';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import { MainModule } from './layouts/main/main.module';
 
 @NgModule({
   declarations: [
@@ -15,7 +15,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    DefaultModule,
+    MainModule,
     AuthModule,
     BrowserAnimationsModule
   ],
