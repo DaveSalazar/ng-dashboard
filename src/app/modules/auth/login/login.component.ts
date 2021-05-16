@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { IAuthService } from 'src/app/services/auth/IAuthService';
 
@@ -15,6 +16,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private snackBar: MatSnackBar,
     private authService: IAuthService
   ) {
     this.loginFormGroup = new FormGroup({
@@ -29,8 +31,13 @@ export class LoginComponent implements OnInit {
   loginSubmit() {
     this.authService.login(this.loginFormGroup.value)
     .subscribe(res => {
-      console.log('submit')
       this.router.navigate(['/dashboard'])
+    },
+    err => {
+      console.log(err)
+      this.snackBar.open(err.error.message, 'Aceptar', {
+        duration: 2000,
+      });
     })
   }
 

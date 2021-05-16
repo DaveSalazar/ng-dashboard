@@ -7,6 +7,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { IAuthService } from './IAuthService';
 import { TokenService } from './token.service';
+import { User } from 'src/app/models/User';
+import { Login } from 'src/app/models/Login';
 
 @Injectable({
   providedIn: 'root',
@@ -22,13 +24,13 @@ export class AuthService implements IAuthService {
     private snackBar: MatSnackBar,
   ) {}
 
-  login(user: { email: string; password: string }): Observable<any> {
-    return this.http.post<any>(`${this.URL}/auth/login`, user).pipe(     
+  login(user: Login): Observable<User> {
+    return this.http.post<User>(`${this.URL}/auth/login`, user).pipe(     
       catchError((error) => {
         this.snackBar.open(error.error.message, 'Aceptar', {
           duration: 2000,
         });
-        return null;
+        throw error
       })
     );
   }
@@ -38,7 +40,7 @@ export class AuthService implements IAuthService {
     this.router.navigate(['/authentication'])
   }
 
-  register(user: { username: string; password: string }): Observable<boolean> {
+  register(user: User): Observable<User> {
     return this.http
       .post<any>(`${this.URL}/auth/register`, user)
       .pipe(

@@ -1,16 +1,15 @@
 import { Observable } from "rxjs";
+import { Login } from "src/app/models/Login";
+import { User } from "src/app/models/User";
 
 export abstract class IAuthService {
     
-  abstract login(user: { email: string; password: string }): Observable<void>;
+  abstract login(user: Login): Observable<User>;
 
   abstract logout(): void;
 
-  abstract register(user: { username: string; password: string }): Observable<boolean>;
+  abstract register(user: User): Observable<User>;
 
   abstract isLoggedIn();
 
-  abstract refreshToken();
-
-  abstract getJwtToken(): string;
 }
