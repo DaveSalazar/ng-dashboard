@@ -10,6 +10,6 @@ export abstract class IAuthService {
 
   abstract register(user: User): Observable<User>;
 
-  abstract isLoggedIn();
+  abstract isLoggedIn(): boolean;
 
 }

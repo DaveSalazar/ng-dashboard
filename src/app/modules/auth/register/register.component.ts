@@ -1,36 +1,48 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { v4 as uuidv4 } from "uuid";
+import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { IProfile } from 'src/app/models/Profile';
+import { IUser } from 'src/app/models/User';
+import { IAuthService } from 'src/app/services/auth/IAuthService';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent implements OnInit {
-
   registerFormGroup: FormGroup;
   hidePassword = true;
 
-  constructor(
-    private authService: AuthService
-  ) { 
+  constructor(private router: Router, private authService: IAuthService) {
     this.registerFormGroup = new FormGroup({
-      id: new FormControl(uuidv4()),
       profileId: new FormControl(uuidv4()),
-      firstName: new FormControl("", [Validators.required]),
-      lastName: new FormControl("", [Validators.required]),
-      email: new FormControl("", [Validators.required]),
-      password: new FormControl("", [Validators.required]),
-    })
+      firstName: new FormControl('', [Validators.required]),
+      lastName: new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required]),
+      password: new FormControl('', [Validators.required]),
+    });
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-  registerSubmit() {
-    this.authService.register(this.registerFormGroup.value)
-    .subscribe(res => console.log)
+  registerSubmit(registerForm: FormGroup) {
+    
+    const register = registerForm.value;
+    const profile: IProfile = {
+      id: uuidv4(),
+      firstName: register.firstName,
+      lastName: register.lastName,
+    }
+
+    const user: IUser = {
+      id: uuidv4(),
+      email: register.email,
+      profile,
+    };
+    this.authService.register(user).subscribe((res) => {
+      this.router.navigate(['/dashboard']);
+    });
   }
 }

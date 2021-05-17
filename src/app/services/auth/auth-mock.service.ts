@@ -17,9 +17,9 @@ export class AuthMockService implements IAuthService {
       id: uuidv4(),
       email: 'admin@test.com',
       profile: {
-        profileId: uuidv4(),
-        firstName: '',
-        lastName: '',
+        id: uuidv4(),
+        firstName: 'John',
+        lastName: 'Doe',
       }
     }
   ]);
@@ -34,27 +34,32 @@ export class AuthMockService implements IAuthService {
         if(!user) {
           const error = {code: "invalid_credentials", message: "credentials are not valid"}
           throw { error }
+        } else {
+          this._isLoggedIn.next(true);
+          console.log("logged in")
         }
       })
     )
   }
 
-  logout(): void {
-    this._isLoggedIn.next(false);
-  }
 
   register(user: User): Observable<User> {
 
     const currentUsers = this.users.getValue()
     currentUsers.push(user)
     this.users.next(currentUsers)
+    this._isLoggedIn.next(true);
 
     return new Observable(subscriber => {
       subscriber.next(user);
     });
   }
 
+  logout(): void {
+    this._isLoggedIn.next(false);
+  }
+
   isLoggedIn(): boolean {
-    return this._isLoggedIn.value
+    return this._isLoggedIn.getValue()
   }
 }

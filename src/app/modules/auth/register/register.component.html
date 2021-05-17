@@ -1,7 +1,7 @@
 <form
+  #registerForm
   [formGroup]="registerFormGroup"
-  (ngSubmit)="registerSubmit()"
-  (keydown.enter)="$event.preventDefault()"
+  (ngSubmit)="registerSubmit(registerFormGroup)"
 >
   <mat-form-field class="example-full-width">
     <mat-label>First Name</mat-label>

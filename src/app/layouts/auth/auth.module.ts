@@ -14,8 +14,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginComponent } from 'src/app/modules/auth/login/login.component';
 import { RegisterComponent } from 'src/app/modules/auth/register/register.component';
-import { AuthMockService } from 'src/app/services/auth/auth-mock.service';
-import { IAuthService } from 'src/app/services/auth/IAuthService';
 
 @NgModule({
   declarations: [
@@ -38,11 +36,5 @@ import { IAuthService } from 'src/app/services/auth/IAuthService';
     HttpClientModule,
     MatFormFieldModule
   ],
-  providers: [
-    {
-      provide: IAuthService,
-      useClass: AuthMockService
-    }
-  ]
 })
 export class AuthModule { }

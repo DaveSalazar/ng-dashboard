@@ -1,20 +1,20 @@
 export interface IProfile {
-  profileId: string;
+  id: string;
   firstName: string;
   lastName: string;
 }
 
 export class Profile implements IProfile {
-  readonly profileId: string;
+  readonly id: string;
   readonly firstName: string;
   readonly lastName: string;
 
   constructor(
-    profileId: string,
+    id: string,
     firstName: string,
     lastName: string
   ) {
-    this.profileId = profileId;
+    this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
   }
