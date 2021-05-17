@@ -10,7 +10,7 @@ export class User implements IUser {
     
     readonly id: string;
     readonly email: string;
-    readonly profile: IProfile;
+    profile: IProfile;
 
     constructor(
         id: string,

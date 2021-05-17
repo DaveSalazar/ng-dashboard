@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, of } from 'rxjs';
 import { Observable } from 'rxjs';
 import { Profile } from 'src/app/models/Profile';
+import { User } from 'src/app/models/User';
 import { IProfileService } from './IProfileService';
 
 @Injectable({
@@ -8,13 +10,18 @@ import { IProfileService } from './IProfileService';
 })
 export class ProfileMockService implements IProfileService {
 
+  private profile: BehaviorSubject<User> = new BehaviorSubject(null)
+
   constructor() { }
 
   saveProfile(profile: Profile): Observable<void> {
-    throw new Error('Method not implemented.');
+    let user = this.profile.getValue()
+    user.profile = profile
+    this.profile.next(user)
+    return of()
   }
   
-  getProfile(): Profile {
-    throw new Error('Method not implemented.');
+  getProfile(): Observable<User> {
+    return this.profile.asObservable()
   }
 }
