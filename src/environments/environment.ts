@@ -4,9 +4,8 @@
 
 export const environment = {
   production: false,
-  SOCKET_ENDPOINT: 'http://localhost:3000',
-  BASE_URL:  'http://localhost:8085/admin/api/v1',
-  APP_VERSION: 'dev'
+  BASE_URL:  'http://localhost:8080/admin',
+  ISSUER: 'http://localhost:8091/auth/realms/',
 };
 
 /*
